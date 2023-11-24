@@ -1,35 +1,43 @@
-pipeline{
+pipeline {
     agent any
-    tools {
+     tools {
         maven 'Maven' 
-    }
-    stages{
+        }
+    stages {
         stage("Test"){
             steps{
-                //mvn test
-                sh 'mvn test'
+                // mvn test
+                sh "mvn test"
+                slackSend channel: 'youtubejenkins', message: 'Job Started'
+                
             }
+            
         }
-         stage("Build"){
+        stage("Build"){
             steps{
-                //mvn package
-                sh 'mvn package'
+                sh "mvn package"
+                
             }
+            
         }
-         stage("Deploy on Test"){
+        stage("Deploy on Test"){
             steps{
-                //deploy to container
+                // deploy on container -> plugin
                 deploy adapters: [tomcat9(credentialsId: 'tomcatserverdetails', path: '', url: 'http://54.185.252.124:8080')], contextPath: '/app', war: '**/*.war'
+              
             }
+            
         }
-         stage("Deploy on Prod"){
-            input {
-                message "Should we continue ?"
-                ok "Yes we should"
+        stage("Deploy on Prod"){
+             input {
+                message "Should we continue?"
+                ok "Yes we Should"
             }
+            
             steps{
-                //deploy to container
+                // deploy on container -> plugin
                 deploy adapters: [tomcat9(credentialsId: 'tomcatserverdetails', path: '', url: 'http://54.218.124.187:8080')], contextPath: '/app', war: '**/*.war'
+
             }
         }
     }
@@ -39,9 +47,11 @@ pipeline{
         }
         success{
             echo "========pipeline executed successfully ========"
+             slackSend channel: 'youtubejenkins', message: 'Success'
         }
         failure{
             echo "========pipeline execution failed========"
+             slackSend channel: 'youtubejenkins', message: 'Job Failed'
         }
     }
 }
