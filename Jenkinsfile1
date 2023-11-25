@@ -8,7 +8,7 @@ pipeline {
             steps{
                 // mvn test
                 sh "mvn test"
-                slackSend channel: 'youtube-jenkins', message: 'job started'
+                slackSend channel: 'youtube-jenkins1', message: 'Job started'
                 
             }
             
@@ -23,7 +23,7 @@ pipeline {
         stage("Deploy on Test"){
             steps{
                 // deploy on container -> plugin
-                deploy adapters: [tomcat9(credentialsId: 'tomcatserverdetails', path: '', url: 'http://54.185.252.124:8080')], contextPath: '/app', war: '**/*.war'
+                deploy adapters: [tomcat9(credentialsId: 'tomcatserver', path: '', url: 'http://52.41.164.219:8080')], contextPath: '/app', war: '**/*/war'
               
             }
             
@@ -36,7 +36,7 @@ pipeline {
             
             steps{
                 // deploy on container -> plugin
-                deploy adapters: [tomcat9(credentialsId: 'tomcatserverdetails', path: '', url: 'http://54.218.124.187:8080')], contextPath: '/app', war: '**/*.war'
+                deploy adapters: [tomcat9(credentialsId: 'tomcatserver', path: '', url: 'http://18.236.74.34:8080')], contextPath: '/app', war: '**/*/war'
 
             }
         }
@@ -47,11 +47,11 @@ pipeline {
         }
         success{
             echo "========pipeline executed successfully ========"
-             slackSend channel: 'youtube-jenkins', message: 'job Success'
+             slackSend channel: 'youtube-jenkins1', message: 'job Success'
         }
         failure{
             echo "========pipeline execution failed========"
-             slackSend channel: 'yoyoutube-jenkins', message: 'Job Failed'
+             slackSend channel: 'yoyoutube-jenkins1', message: 'Job Failed'
         }
     }
 }
